@@ -10,7 +10,9 @@ export class HeroGroup extends Phaser.Group {
 		// 第一个
 		this.createHero({
 			x: scene.game.width / 3,
+			// 子弹速度
 			bulletVelocity: 200,
+			// 子弹准备速度
 			readySpeed: 1.5,
 		});
 		// 第二个
@@ -40,13 +42,14 @@ export class HeroGroup extends Phaser.Group {
 	
 	shoot(hero, options) {
 		
-		var closestEnemy;
-		var closestDistance = Infinity;
+		let closestEnemy;
+		let closestDistance = Infinity;
 		this.enemyGroup.forEachAlive((enemy) => {
 			// 在这里，enemy 是 group 中的每一个敌人
-			var distance = Phaser.Math.distance(this.tower.x, this.tower.y, enemy.x, enemy.y);
+			let distance = Phaser.Math.distance(this.tower.x, this.tower.y, enemy.x, enemy.y);
 			
-			if (distance < closestDistance) {
+			if (distance < closestDistance && enemy.shootable) {
+				enemy.shootable = false;
 				closestDistance = distance;
 				closestEnemy = enemy;
 			}
@@ -54,7 +57,7 @@ export class HeroGroup extends Phaser.Group {
 		
 		if (closestEnemy) {
 			
-			var bullet = this.bulletGroup.getFirstExists(false);
+			let bullet = this.bulletGroup.getFirstExists(false);
 			if(bullet) {
 				bullet.reset(hero.x, hero.y);
 			} else {
@@ -65,11 +68,11 @@ export class HeroGroup extends Phaser.Group {
 				bullet.scale.setTo(0.4, 0.4);
 			}
 			// 计算子弹的目标位置
-			var targetX = closestEnemy.x - hero.x;
-			var targetY = closestEnemy.y - hero.y;
+			let targetX = closestEnemy.x - hero.x;
+			let targetY = closestEnemy.y - hero.y;
 			
 			// 计算子弹的角度
-			var angle = Math.atan2(targetY, targetX);
+			let angle = Math.atan2(targetY, targetX);
 			
 			// 设置子弹的速度
 			bullet.body.velocity.x = Math.cos(angle) * options.bulletVelocity;

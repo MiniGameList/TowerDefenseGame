@@ -51,6 +51,7 @@ export class EnemyGroup extends Phaser.Group {
 			enemy.addChild(enemy.healthBar);
 		}
 		
+		enemy.shootable = true;
 		enemy.body.velocity.y = 20;
 		
 	}
