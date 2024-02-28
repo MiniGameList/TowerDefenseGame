@@ -4,9 +4,13 @@ export class EnemyGroup extends Phaser.Group {
 		super(scene);
 		this.game = scene.game;
 		this.enableBody = true;
-		
+		let time = 0;
 		// 生成敌机
 		this.enemyTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 1, () => {
+			time++;
+			if (time > 10) {
+				this.game.time.events.remove(this.enemyTimer);
+			}
 			this.generateOneEnemy();
 		});
 	}

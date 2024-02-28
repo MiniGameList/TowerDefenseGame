@@ -44,19 +44,20 @@ export class HeroGroup extends Phaser.Group {
 		
 		let closestEnemy;
 		let closestDistance = Infinity;
+		
+		
 		this.enemyGroup.forEachAlive((enemy) => {
 			// 在这里，enemy 是 group 中的每一个敌人
-			let distance = Phaser.Math.distance(this.tower.x, this.tower.y, enemy.x, enemy.y);
+			let distance = Phaser.Math.distance(hero.x, hero.y, enemy.x, enemy.y);
 			
-			if (distance < closestDistance && enemy.shootable) {
-				enemy.shootable = false;
+			if ((distance <= closestDistance) && enemy.shootable) {
 				closestDistance = distance;
 				closestEnemy = enemy;
 			}
 		});
 		
 		if (closestEnemy) {
-			
+			closestEnemy.shootable = false;
 			let bullet = this.bulletGroup.getFirstExists(false);
 			if(bullet) {
 				bullet.reset(hero.x, hero.y);
@@ -73,7 +74,7 @@ export class HeroGroup extends Phaser.Group {
 			
 			// 计算子弹的角度
 			let angle = Math.atan2(targetY, targetX);
-			
+			console.log(angle, 333);
 			// 设置子弹的速度
 			bullet.body.velocity.x = Math.cos(angle) * options.bulletVelocity;
 			bullet.body.velocity.y = Math.sin(angle) * options.bulletVelocity;
