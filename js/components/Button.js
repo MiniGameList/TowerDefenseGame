@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @param {*} obj Phaser object
  * @param {() => void} callback 点击回调
  */
@@ -11,7 +11,7 @@ export function Button(obj, callback) {
     obj.scale.set(scaleX, scaleY);
     setTimeout(() => {
       callback();
-    }, 100);
+    }, 400);
   });
   obj.events.onInputDown.add(() => {
       obj.scale.set(scaleX * 0.9, scaleY * 0.9);
