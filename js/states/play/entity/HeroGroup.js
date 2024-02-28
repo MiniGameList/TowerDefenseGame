@@ -7,15 +7,10 @@ export class HeroGroup extends Phaser.Group {
 		this.tower = tower;
 		this.enableBody = true;
 		this.enemyGroup = enemyGroup;
-		const hero = this.create(scene.game.width / 3, scene.game.height - 50, 'enemy');
-		hero.anchor.setTo(0.5, 0.5);
-		hero.scale.setTo(0.5, 0.5);
-		hero.inputEnabled = true;
-		// 发射子弹
-		hero.bulletTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 1.5, () => {
-			this.shoot(hero);
-		});
-		
+		// 第一个
+		this.createHero(scene.game.width / 3);
+		// 第二个
+		this.createHero(scene.game.width / 3 * 2);
 		// 子弹
 		this.bulletGroup = this.game.add.group();
 		this.bulletGroup.enableBody = true;
@@ -23,6 +18,16 @@ export class HeroGroup extends Phaser.Group {
 		// 爆炸
 		this.explosionGroup = this.game.add.group();
 		this.explosionGroup.enableBody = true;
+	}
+	createHero(x) {
+		const hero = this.create(x, this.game.height - 50, 'enemy');
+		hero.anchor.setTo(0.5, 0.5);
+		hero.scale.setTo(0.5, 0.5);
+		hero.inputEnabled = true;
+		// 发射子弹
+		hero.bulletTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 1.5, () => {
+			this.shoot(hero);
+		});
 	}
 	
 	shoot(hero) {
