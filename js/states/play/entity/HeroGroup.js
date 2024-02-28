@@ -8,9 +8,17 @@ export class HeroGroup extends Phaser.Group {
 		this.enableBody = true;
 		this.enemyGroup = enemyGroup;
 		// 第一个
-		this.createHero(scene.game.width / 3);
+		this.createHero({
+			x: scene.game.width / 3,
+			bulletVelocity: 200,
+			readySpeed: 1.5,
+		});
 		// 第二个
-		this.createHero(scene.game.width / 3 * 2);
+		this.createHero({
+			x: scene.game.width / 3 * 2,
+			bulletVelocity: 300,
+			readySpeed: 2
+		});
 		// 子弹
 		this.bulletGroup = this.game.add.group();
 		this.bulletGroup.enableBody = true;
@@ -19,30 +27,19 @@ export class HeroGroup extends Phaser.Group {
 		this.explosionGroup = this.game.add.group();
 		this.explosionGroup.enableBody = true;
 	}
-	createHero(x) {
-		const hero = this.create(x, this.game.height - 50, 'enemy');
+	createHero(options) {
+		const hero = this.create(options.x, this.game.height - 50, 'hero');
 		hero.anchor.setTo(0.5, 0.5);
 		hero.scale.setTo(0.5, 0.5);
 		hero.inputEnabled = true;
 		// 发射子弹
-		hero.bulletTimer = this.game.time.events.loop(Phaser.Timer.SECOND * 1.5, () => {
-			this.shoot(hero);
+		hero.bulletTimer = this.game.time.events.loop(Phaser.Timer.SECOND * options.readySpeed, () => {
+			this.shoot(hero, options);
 		});
 	}
 	
-	shoot(hero) {
-		var bullet = this.bulletGroup.getFirstExists(false);
-		if(bullet) {
-			bullet.reset(hero.x, hero.y);
-			// bullet.body.velocity.y = -600;
-		} else {
-			bullet = this.bulletGroup.create(hero.x, hero.y, 'bullet');
-			bullet.outOfBoundsKill = true;
-			bullet.checkWorldBounds = true;
-			bullet.anchor.setTo(0.5, 0.5);
-			bullet.scale.setTo(0.4, 0.4);
-			// bullet.body.velocity.y = -600;
-		}
+	shoot(hero, options) {
+		
 		var closestEnemy;
 		var closestDistance = Infinity;
 		this.enemyGroup.forEachAlive((enemy) => {
@@ -57,6 +54,16 @@ export class HeroGroup extends Phaser.Group {
 		
 		if (closestEnemy) {
 			
+			var bullet = this.bulletGroup.getFirstExists(false);
+			if(bullet) {
+				bullet.reset(hero.x, hero.y);
+			} else {
+				bullet = this.bulletGroup.create(hero.x, hero.y, 'bullet');
+				bullet.outOfBoundsKill = true;
+				bullet.checkWorldBounds = true;
+				bullet.anchor.setTo(0.5, 0.5);
+				bullet.scale.setTo(0.4, 0.4);
+			}
 			// 计算子弹的目标位置
 			var targetX = closestEnemy.x - hero.x;
 			var targetY = closestEnemy.y - hero.y;
@@ -65,8 +72,8 @@ export class HeroGroup extends Phaser.Group {
 			var angle = Math.atan2(targetY, targetX);
 			
 			// 设置子弹的速度
-			bullet.body.velocity.x = Math.cos(angle) * 300;
-			bullet.body.velocity.y = Math.sin(angle) * 300;
+			bullet.body.velocity.x = Math.cos(angle) * options.bulletVelocity;
+			bullet.body.velocity.y = Math.sin(angle) * options.bulletVelocity;
 			// this.game.physics.arcade.moveToObject(bullet, closestEnemy, 300);
 		}
 		// this.soundBullet.play();
