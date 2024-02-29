@@ -16,5 +16,4 @@ export function Button(obj, callback) {
   obj.events.onInputDown.add(() => {
       obj.scale.set(scaleX * 0.9, scaleY * 0.9);
   });
-  //
 }
